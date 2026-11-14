@@ -1,0 +1,9 @@
+Flask
+pandas
+googlemaps
+scikit-learn
+plotly
+folium
+requests
+python-dotenv
+fpdf2

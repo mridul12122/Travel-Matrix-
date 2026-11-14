@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Travel Matrix — Smart AI Trip Planner</title>
+  <meta name="description" content="AI-powered trip planning with ML transport predictions, smart itineraries and budget optimization." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ── YouTube Background Video ── -->
+<div id="yt-bg-wrapper">
+  <div id="yt-player"></div>
+</div>
+<div class="video-overlay"></div>
+
+<!-- Mute toggle button -->
+<button class="mute-btn" id="mute-btn" onclick="toggleMute()" title="Toggle sound">🔇</button>
+
+<!-- Animated background blobs -->
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+
+<div class="page-wrapper">
+
+  <!-- ═══════════════════ HEADER ═══════════════════ -->
+  <header class="app-header">
+    <div class="header-badge">✨ Powered by AI &amp; Machine Learning</div>
+    <h1 class="app-title">🌍 Travel Matrix</h1>
+    <p class="app-tagline">Plan your perfect trip — <span class="highlight">ML transport predictions</span>, K-Means clustering &amp; intelligent budget optimization</p>
+  </header>
+
+  <!-- ═══════════════════ INPUT SECTION ═══════════════════ -->
+  <div id="input-section" class="input-section">
+    <div class="input-card">
+
+      <!-- Top gradient bar -->
+      <div class="card-glow-bar"></div>
+
+      <!-- Analog Clock -->
+      <div class="clock-wrapper">
+        <div class="clock" id="clock">
+          <div class="clock-face">
+            <div class="num n1"><span>1</span></div>
+            <div class="num n2"><span>2</span></div>
+            <div class="num n3"><span>3</span></div>
+            <div class="num n4"><span>4</span></div>
+            <div class="num n5"><span>5</span></div>
+            <div class="num n6"><span>6</span></div>
+            <div class="num n7"><span>7</span></div>
+            <div class="num n8"><span>8</span></div>
+            <div class="num n9"><span>9</span></div>
+            <div class="num n10"><span>10</span></div>
+            <div class="num n11"><span>11</span></div>
+            <div class="num n12"><span>12</span></div>
+            <div class="hand hour-hand" id="hour-hand"></div>
+            <div class="hand min-hand"  id="min-hand"></div>
+            <div class="hand sec-hand"  id="sec-hand"></div>
+            <div class="center-dot"></div>
+          </div>
+        </div>
+        <div class="clock-date" id="clock-date"></div>
+      </div>
+
+      <h2 class="form-heading">✈️ Plan Your Journey</h2>
+      <p class="form-sub">Enter your trip details below and let AI do the rest</p>
+
+      <!-- Form Grid -->
+      <div class="form-grid">
+
+        <div class="field-group">
+          <label class="field-label" for="budget">💰 Total Budget (₹)</label>
+          <input type="number" id="budget" class="field-input" value="15000" min="2000" step="1000" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="travelers">👥 No. of Travelers</label>
+          <input type="number" id="travelers" class="field-input" value="1" min="1" max="10" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="origin">🚀 Origin City</label>
+          <input type="text" id="origin" list="origin-list" class="field-input" placeholder="Type to search…" autocomplete="off" />
+          <datalist id="origin-list"></datalist>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="destination">📍 Destination City</label>
+          <input type="text" id="destination" list="dest-list" class="field-input" placeholder="Where to?" autocomplete="off" />
+          <datalist id="dest-list"></datalist>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="checkin">📅 Check-in Date</label>
+          <input type="date" id="checkin" class="field-input" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="checkout">📅 Check-out Date</label>
+          <input type="date" id="checkout" class="field-input" />
+        </div>
+
+        <div class="form-error hidden full" id="form-error"></div>
+
+        <div class="full">
+          <button class="generate-btn" id="generate-btn" onclick="generatePlan()">
+            <span class="btn-shimmer"></span>
+            <span class="btn-text">🚀 Generate AI Travel Plan</span>
+          </button>
+        </div>
+
+      </div>
+    </div><!-- /input-card -->
+
+    <!-- Feature Cards -->
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🤖</span>
+        <h3>ML Transport AI</h3>
+        <p>Random Forest model predicts your optimal transport mode</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🗺️</span>
+        <h3>K-Means Clustering</h3>
+        <p>Intelligent daily itinerary grouped by geographic proximity</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">💰</span>
+        <h3>Budget Optimizer</h3>
+        <p>AI balances transport, hotel &amp; food within your budget</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🌤️</span>
+        <h3>Live Weather AI</h3>
+        <p>Real-time forecasts with smart AI packing suggestions</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🍽️</span>
+        <h3>Food Engine</h3>
+        <p>Budget-aware restaurant recommendations via Google Places</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">💬</span>
+        <h3>Groq AI Assistant</h3>
+        <p>Ask anything about your trip — powered by Llama 3</p>
+      </div>
+    </div>
+  </div><!-- /input-section -->
+
+  <!-- ═══════════════════ LOADING ═══════════════════ -->
+  <div id="loading-screen" class="loading-screen hidden">
+    <div class="loader-rings">
+      <div class="ring r1"></div>
+      <div class="ring r2"></div>
+      <div class="ring r3"></div>
+      <div class="loader-icon">🧠</div>
+    </div>
+    <p class="loading-title">AI is crafting your perfect journey…</p>
+    <div class="loading-steps">
+      <div class="lstep" id="ls1">📡 Fetching route &amp; distance data</div>
+      <div class="lstep" id="ls2">🤖 Running Random Forest model</div>
+      <div class="lstep" id="ls3">📍 Clustering locations with K-Means</div>
+      <div class="lstep" id="ls4">🍽️ Analyzing restaurants &amp; food</div>
+      <div class="lstep" id="ls5">✅ Finalizing your travel plan</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ RESULTS ═══════════════════ -->
+  <div id="results-section" class="results-section hidden">
+
+    <div class="results-topbar">
+      <button class="new-search-btn" onclick="newSearch()">← New Search</button>
+      <button class="export-pdf-btn" id="export-pdf-btn" onclick="exportToPDF()">📥 Download PDF</button>
+    </div>
+
+    <div class="trip-bar" id="trip-bar"></div>
+
+    <div class="offline-banner hidden" id="offline-banner">
+      📡 Offline Mode — Using saved fallback data. Images unavailable.
+    </div>
+
+    <div class="tabs-container">
+      <div class="tabs-bar" role="tablist">
+        <button class="tab-btn active" id="tb-itinerary" onclick="switchTab('itinerary')">🗺️ Itinerary</button>
+        <button class="tab-btn" id="tb-transport"        onclick="switchTab('transport')">🚆 Transport</button>
+        <button class="tab-btn" id="tb-hotel"            onclick="switchTab('hotel')">🏨 Hotel AI</button>
+        <button class="tab-btn" id="tb-food"             onclick="switchTab('food')">🍽️ Food Engine</button>
+        <button class="tab-btn" id="tb-budget"           onclick="switchTab('budget')">💰 Budget</button>
+        <button class="tab-btn" id="tb-chat"             onclick="switchTab('chat')">💬 AI Chat</button>
+      </div>
+      <div class="tab-panels">
+        <div class="tab-panel active" id="panel-itinerary"></div>
+        <div class="tab-panel"        id="panel-transport"></div>
+        <div class="tab-panel"        id="panel-hotel"></div>
+        <div class="tab-panel"        id="panel-food"></div>
+        <div class="tab-panel"        id="panel-budget"></div>
+        <div class="tab-panel"        id="panel-chat"></div>
+      </div>
+    </div>
+
+  </div><!-- /results-section -->
+
+</div><!-- /page-wrapper -->
+
+
+<!-- YouTube IFrame API -->
+<script>
+(function() {
+  var s = document.createElement('script');
+  s.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(s);
+})();
+
+var _ytPlayer;
+var _ytMuted = true;
+
+function onYouTubeIframeAPIReady() {
+  _ytPlayer = new YT.Player('yt-player', {
+    videoId: 'FOvOxeb2TCg',
+    playerVars: {
+      autoplay:        1,
+      mute:            1,
+      loop:            1,
+      controls:        0,
+      showinfo:        0,
+      rel:             0,
+      playlist:        'FOvOxeb2TCg',
+      modestbranding:  1,
+      iv_load_policy:  3,
+      disablekb:       1,
+      fs:              0,
+      cc_load_policy:  0,
+      origin: window.location.origin
+    },
+    events: {
+      onReady: function(e) { 
+        console.log("Player Ready");
+        e.target.mute(); 
+        setTimeout(function(){ e.target.playVideo(); }, 1000); 
+      },
+      onStateChange: function(e) {
+        if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) {
+          e.target.playVideo();
+        }
+      },
+      onError: function(e) {
+        console.error("YT Player Error:", e.data);
+      }
+    }
+  });
+};
+
+function toggleMute() {
+  var btn = document.getElementById('mute-btn');
+  if (!_ytPlayer || typeof _ytPlayer.unMute !== 'function') return;
+  if (_ytMuted) {
+    _ytPlayer.unMute();
+    _ytPlayer.setVolume(30);
+    btn.textContent = '🔊';
+  } else {
+    _ytPlayer.mute();
+    btn.textContent = '🔇';
+  }
+  _ytMuted = !_ytMuted;
+}
+</script>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
